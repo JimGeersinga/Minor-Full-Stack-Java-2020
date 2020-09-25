@@ -28,7 +28,16 @@ class StringServiceTests {
     StringServiceProd stringServiceProd;
 
     @Test
-    @Profile("dev")
+    void constructorTestDev(){
+        assertThat(stringServiceDev.GetStringRepository()).isEqualTo(stringRepository);
+    }
+
+    @Test
+    void constructorTestProd(){
+        assertThat(stringServiceProd.GetStringRepository()).isEqualTo(stringRepository);
+    }
+
+    @Test
     void testReverseDev() {
         // Given
         String text = "test";
@@ -38,7 +47,6 @@ class StringServiceTests {
     }
 
     @Test
-    @Profile("prod")
     void testReverseProd() {
         // Given
         String text = "test";
