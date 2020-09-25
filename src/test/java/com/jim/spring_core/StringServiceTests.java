@@ -66,7 +66,7 @@ class StringServiceTests {
         when(stringRepository.getWordCount(text2)).thenReturn(5);
 
         // Then
-        assertThat(stringServiceDev.countWords(text1)).isEqualTo(4);
+        assertThat(stringServiceDev.countWords(text1)).isEqualTo(null);
         assertThat(stringServiceDev.countWords(text2)).isEqualTo(5);
         assertThat(stringServiceDev.countWords(text2)).isNotEqualTo(6);
     }
