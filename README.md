@@ -4,14 +4,14 @@
 ###Mutation testing:
 
 Changed this:
-```
+```java
 if(wordCount == null) {		
     wordCount = value.split(" ").length;
     repository.saveWordCount(value, wordCount);	
 }
 ```
 To this:
-```
+```java
 if(wordCount == null) {
     wordCount = value.split(" ").length;
     repository.saveWordCount(value, wordCount);
