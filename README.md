@@ -18,4 +18,4 @@ if(wordCount == null) {
     return  repository.getWordCount(value);
 }
 ```
-Because if `repository.saveWordCount` would fail the correct answer would be returned where a null value would be expected
+Because if `repository.saveWordCount` would fail the correct answer would be returned whereas a null value would be expected
