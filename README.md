@@ -4,18 +4,11 @@
 ### Mutation testing:
 
 Changed this:
-```java
+```
 if(wordCount == null) {		
     wordCount = value.split(" ").length;
     repository.saveWordCount(value, wordCount);	
 }
 ```
-To this:
-```java
-if(wordCount == null) {
-    wordCount = value.split(" ").length;
-    repository.saveWordCount(value, wordCount);
-    return  repository.getWordCount(value);
-}
-```
+Added verification if the mock call has been called
 Because if `repository.saveWordCount` would fail the correct answer would be returned whereas a null value would be expected

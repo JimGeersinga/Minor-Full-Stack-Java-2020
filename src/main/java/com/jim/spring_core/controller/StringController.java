@@ -1,24 +1,26 @@
 package com.jim.spring_core.controller;
 
-import com.jim.spring_core.service.StringService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.jim.spring_core.service.StringTransformService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("string")
+@RequiredArgsConstructor
 public class StringController {
 
-    @Autowired
-    private StringService _stringService;
+    private final StringTransformService _stringTransformService;
 
     @GetMapping("/countWords")
-    public int countWords(@RequestParam(name="value") String value){
-        return _stringService.countWords(value);
+    public int countWords(@RequestParam("value") String input){
+        return _stringTransformService.countWords(input);
     }
 
-    @GetMapping("/reverse")
-    public  String reverse(@RequestParam(name="value") String value){
-        return _stringService.reverse(value);
+    @GetMapping("/transform")
+    public  String transform(@RequestParam("value") String input){
+        return _stringTransformService.transform(input);
     }
 }
