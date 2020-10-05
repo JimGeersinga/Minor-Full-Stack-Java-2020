@@ -20,11 +20,10 @@ import java.util.Collection;
 public class AccountHolderController {
 
     private final AccountHolderService accountHolderService;
-    private final AccountService accountService;
 
     @GetMapping()
-    public ResponseEntity<Collection<Account>> getAccountHolders(){
-        var accounts = accountService.getAll();
+    public ResponseEntity<Collection<AccountHolder>> getAccountHolders(){
+        var accounts = accountHolderService.getAll();
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 

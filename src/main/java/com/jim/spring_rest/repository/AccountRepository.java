@@ -29,9 +29,10 @@ public class AccountRepository {
     public Collection<Account> getByAccountHolderId(int accountHolderId) {
         var accountIds = accountLinks.entrySet().stream()
                 .filter(x -> x.getValue().contains(accountHolderId))
-                .map(x -> x.getKey());
+                .map(x -> x.getKey())
+                .collect(Collectors.toList());
         return accounts.entrySet().stream()
-                .filter(x -> accountIds.anyMatch(aId -> aId.equals(x.getKey())))
+                .filter(x -> accountIds.stream().anyMatch(aId -> aId.equals(x.getKey())))
                 .map(x -> x.getValue())
                 .collect(Collectors.toList());
     }
