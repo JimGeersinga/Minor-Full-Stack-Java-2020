@@ -22,6 +22,7 @@ public class AccountHolderController {
     private final AccountHolderService accountHolderService;
     private final AccountService accountService;
 
+    @GetMapping()
     public ResponseEntity<Collection<Account>> getAccountHolders(){
         var accounts = accountService.getAll();
         return new ResponseEntity<>(accounts, HttpStatus.OK);
