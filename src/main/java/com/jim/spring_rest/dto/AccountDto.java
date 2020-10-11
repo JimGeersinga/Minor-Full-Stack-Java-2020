@@ -1,16 +1,11 @@
-package com.jim.spring_rest.model;
+package com.jim.spring_rest.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class Account {
-    private int id;
+public class AccountDto extends BaseEntityDto{
     private String accountNumber;
     private Double amount;
     private Boolean isBlocked;

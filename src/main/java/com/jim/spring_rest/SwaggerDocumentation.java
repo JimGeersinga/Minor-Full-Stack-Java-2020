@@ -15,8 +15,8 @@ import java.util.Set;
 @Configuration
 public class SwaggerDocumentation {
 
-    public static final Contact CONTACT = new Contact("Jim Geersubga", "",
-            "jimgeersing@gmail.com");
+    public static final Contact CONTACT = new Contact("Jim Geersinga", "https://www.linkedin.com/in/jim-geersinga/",
+            "jimgeersinga@gmail.com");
     public static final ApiInfo DEFAULT_API = new ApiInfo("swagger", "Swagger Documentation", "1.0", "urn:tos", CONTACT,
             "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0", new ArrayList<>());
     public static final Set<String> consumes = new HashSet<String>(Arrays.asList("application/json"));

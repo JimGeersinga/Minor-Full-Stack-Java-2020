@@ -1,47 +1,62 @@
 package com.jim.spring_rest.service;
 
-import com.jim.spring_rest.model.Account;
-import com.jim.spring_rest.model.AccountHolder;
+import com.jim.spring_rest.dao.Account;
+import com.jim.spring_rest.dao.AccountHolder;
+import com.jim.spring_rest.dto.AccountHolderDto;
 import com.jim.spring_rest.repository.AccountHolderRepository;
 import com.jim.spring_rest.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.relation.RelationNotFoundException;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AccountHolderService {
     private final AccountRepository accountRepository;
     private final AccountHolderRepository accountHolderRepository;
+    private final ModelMapper modelMapper;
 
+    @Transactional(readOnly = true)
     public Collection<AccountHolder> getAll(){
-        return accountHolderRepository.getAll();
+        return accountHolderRepository.findAll();
     }
 
-    public AccountHolder getById(int id){
-        return accountHolderRepository.getById(id);
+    @Transactional(readOnly = true)
+    public Optional<AccountHolder> getById(long id){
+        return accountHolderRepository.findById(id);
     }
-    public Collection<Account> getAccounts(int accountHolderId) {
+
+    @Transactional(readOnly = true)
+    public Collection<Account> getAccounts(long accountHolderId) {
         return accountRepository.getByAccountHolderId(accountHolderId);
     }
 
-    public AccountHolder create(AccountHolder accountHolder){
-        return accountHolderRepository.create(accountHolder);
+    public AccountHolder create(AccountHolderDto accountHolder){
+        AccountHolder accHolder = modelMapper.map(accountHolder, AccountHolder.class);
+        return accountHolderRepository.save(accHolder);
     }
 
-    public void update(int id, AccountHolder accountHolder) throws RelationNotFoundException {
-        if(!accountHolderRepository.exists(id)) {
+    @Transactional
+    public void update(long id, AccountHolderDto accountHolder) throws RelationNotFoundException {
+        Optional<AccountHolder> accountHolderFromDb = accountHolderRepository.findById(id);
+        if(!accountHolderFromDb.isPresent()) {
             throw new RelationNotFoundException("accountholder not found");
         }
-        accountHolderRepository.update(id, accountHolder);
+        AccountHolder accHolder = accountHolderFromDb.get();
+        accHolder.setName(accountHolder.getName());
+        accountHolderRepository.save(accHolder);
     }
 
-    public void delete(int id) throws RelationNotFoundException {
-        if(!accountHolderRepository.exists(id)) {
+    @Transactional
+    public void delete(long id) throws RelationNotFoundException {
+        if(!accountHolderRepository.existsById(id)) {
             throw new RelationNotFoundException("accountholder not found");
         }
-        accountHolderRepository.delete(id);
+        accountHolderRepository.deleteById(id);
     }
 }
