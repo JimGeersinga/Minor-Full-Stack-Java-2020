@@ -44,11 +44,10 @@ public class AccountHolderService {
     @Transactional
     public void update(long id, AccountHolderDto accountHolder) throws RelationNotFoundException {
         Optional<AccountHolder> accountHolderFromDb = accountHolderRepository.findById(id);
-        if(!accountHolderFromDb.isPresent()) {
-            throw new RelationNotFoundException("accountholder not found");
-        }
-        AccountHolder accHolder = accountHolderFromDb.get();
+        AccountHolder accHolder = accountHolderFromDb.orElseThrow(() -> new RelationNotFoundException("accountholder not found"));
+
         accHolder.setName(accountHolder.getName());
+
         accountHolderRepository.save(accHolder);
     }
 

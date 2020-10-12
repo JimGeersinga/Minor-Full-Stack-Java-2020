@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -18,7 +18,7 @@ public class AccountHolder extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="street", column=@Column(name = "address_street")),
