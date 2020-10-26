@@ -3,9 +3,12 @@ package com.jim.layers.controller;
 import com.jim.layers.dao.Account;
 import com.jim.layers.dto.AccountDto;
 import com.jim.layers.exception.AccountNotFoundException;
-import com.jim.layers.mappers.AccountMapper;
+import com.jim.layers.mapper.AccountMapper;
 import com.jim.layers.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,7 @@ public class AccountController {
     private final AccountService accountService;
     private final AccountMapper accountMapper;
 
+    @Cacheable("accounts")
     @GetMapping()
     public ResponseEntity<Collection<AccountDto>> getAccounts(){
         Collection<Account> accounts = accountService.getAll();
@@ -30,6 +34,7 @@ public class AccountController {
         return new ResponseEntity<>(mappedAccounts, HttpStatus.OK);
     }
 
+    @Cacheable("accounts")
     @GetMapping("/{id}")
     public ResponseEntity<AccountDto> getAccount(@PathVariable Long id) {
         Optional<Account> account = accountService.getById(id);
@@ -39,6 +44,7 @@ public class AccountController {
         return  new ResponseEntity<>(mappedAccount, HttpStatus.OK);
     }
 
+    @CachePut(value = "accounts", key="#account.id")
     @PostMapping
     public ResponseEntity<AccountDto> createAccount(@Valid @RequestBody AccountDto account, BindingResult result) {
         if(result.hasErrors()) return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -48,6 +54,7 @@ public class AccountController {
         return  new ResponseEntity<>(mappedAccount, HttpStatus.CREATED);
     }
 
+    @CachePut(value = "accounts", key="#account.id")
     @PutMapping("/{id}")
     public ResponseEntity updateAccount(@PathVariable("id") Long id, @Valid @RequestBody AccountDto account, BindingResult result) {
         if(result.hasErrors()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -60,6 +67,7 @@ public class AccountController {
         }
     }
 
+    @CacheEvict(value = "accounts", key = "#id")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteAccount(@PathVariable Long id) {
         try {

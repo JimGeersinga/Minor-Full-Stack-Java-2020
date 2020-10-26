@@ -1,4 +1,4 @@
-package com.jim.layers.mappers;
+package com.jim.layers.mapper;
 
 import com.jim.layers.dao.Account;
 import com.jim.layers.dto.AccountDto;
@@ -8,7 +8,6 @@ import java.util.Collection;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
-
     AccountDto mapToDestination(Account source);
     Collection<AccountDto> mapToDestination(Collection<Account> source);
 

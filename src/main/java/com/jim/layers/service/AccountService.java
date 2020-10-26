@@ -3,9 +3,12 @@ package com.jim.layers.service;
 import com.jim.layers.dao.Account;
 import com.jim.layers.dto.AccountDto;
 import com.jim.layers.exception.AccountNotFoundException;
-import com.jim.layers.mappers.AccountMapper;
+import com.jim.layers.helper.AccountNumberGenerator;
+import com.jim.layers.mapper.AccountMapper;
 import com.jim.layers.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +32,23 @@ public class AccountService {
 
     @Transactional(readOnly = false)
     public Account create(AccountDto acc){
-        Account account = accountMapper.toSource(acc);
+        Account account = accountMapper.mapToSource(acc);
+        var accountNumber = AccountNumberGenerator.generate();
+        var iban = new Iban.Builder()
+                .countryCode(CountryCode.NL)
+                .bankCode("INGB")
+                .accountNumber(accountNumber)
+                .build();
+        account.setAccountNumber(accountNumber);
+        account.setIban(iban.toFormattedString());
         return accountRepository.save(account);
     }
 
     @Transactional(readOnly = false)
     public void update(long id, AccountDto acc) throws AccountNotFoundException {
         Account account = accountRepository.findById(id).orElseThrow(AccountNotFoundException::new);
+        account.setAmount(acc.getAmount());
+        account.setIsBlocked(acc.getIsBlocked());
         accountRepository.save(account);
     }
 
