@@ -33,14 +33,13 @@ public class AccountService {
     @Transactional(readOnly = false)
     public Account create(AccountDto acc){
         Account account = accountMapper.mapToSource(acc);
+
         var accountNumber = AccountNumberGenerator.generate();
-        var iban = new Iban.Builder()
-                .countryCode(CountryCode.NL)
-                .bankCode("INGB")
-                .accountNumber(accountNumber)
-                .build();
         account.setAccountNumber(accountNumber);
-        account.setIban(iban.toFormattedString());
+
+        var iban = AccountNumberGenerator.generateIban("INGB", accountNumber);
+        account.setIban(iban);
+
         return accountRepository.save(account);
     }
 

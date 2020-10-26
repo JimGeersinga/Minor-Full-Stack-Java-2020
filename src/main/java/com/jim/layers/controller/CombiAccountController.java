@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -43,8 +44,10 @@ public class CombiAccountController {
         CombiAccountDto mappedAccount = combiAccountMapper.mapToDestination(account.get());
         return  new ResponseEntity<>(mappedAccount, HttpStatus.OK);
     }
-
-    @CachePut(value = "combiAccounts", key="#account.id")
+    @Caching(evict = {
+            @CacheEvict(value = "combiAccounts", allEntries = true),
+            @CacheEvict(value = "accounts", allEntries = true)
+    })
     @PostMapping
     public ResponseEntity<CombiAccountDto> createCombiAccount(@Valid @RequestBody CombiAccountDto account, BindingResult result) {
         if(result.hasErrors()) return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -54,7 +57,11 @@ public class CombiAccountController {
         return  new ResponseEntity<>(mappedAccount, HttpStatus.CREATED);
     }
 
-    @CachePut(value = "combiAccounts", key="#account.id")
+    @Caching(put = {
+        @CachePut(value = "combiAccounts", key = "#account.id"),
+        @CachePut(value = "accounts", key = "#account.accountA.id"),
+        @CachePut(value = "accounts", key = "#account.accountB.id"),
+    })
     @PutMapping("/{id}")
     public ResponseEntity updateCombiAccount(@PathVariable("id") Long id, @Valid @RequestBody CombiAccountDto account, BindingResult result) {
         if(result.hasErrors()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -67,7 +74,10 @@ public class CombiAccountController {
         }
     }
 
-    @CacheEvict(value = "combiAccounts", key = "#id")
+    @Caching(evict = {
+        @CacheEvict(value = "combiAccounts", key = "#id"),
+        @CacheEvict(value = "accounts", allEntries = true)
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity deleteCombiAccount(@PathVariable Long id) {
         try {

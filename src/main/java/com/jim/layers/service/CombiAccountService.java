@@ -59,13 +59,11 @@ public class CombiAccountService {
 
     private Account createSubAccount(Account account) {
         var accountNumber = AccountNumberGenerator.generate();
-        var iban = new Iban.Builder()
-                .countryCode(CountryCode.NL)
-                .bankCode("INGB")
-                .accountNumber(accountNumber)
-                .build();
-        account.setIban(iban.toFormattedString());
         account.setAccountNumber(accountNumber);
+
+        var iban = AccountNumberGenerator.generateIban("INGB", accountNumber);
+        account.setIban(iban);
+
         return accountRepository.save(account);
     }
 }

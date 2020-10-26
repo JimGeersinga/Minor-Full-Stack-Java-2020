@@ -1,5 +1,8 @@
 package com.jim.layers.helper;
 
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
+
 import java.util.Random;
 
 public class AccountNumberGenerator {
@@ -7,5 +10,15 @@ public class AccountNumberGenerator {
 
     public static String generate() {
         return String.format("%08d", random.nextInt(99999999));
+    }
+
+    public static String generateIban(String bankCode, String accountNumber) {
+        var accNumberAddition = String.format("%02d", random.nextInt(99));
+        var iban = new Iban.Builder()
+                .countryCode(CountryCode.NL)
+                .bankCode(bankCode)
+                .accountNumber(accountNumber + accNumberAddition)
+                .build();
+       return iban.toFormattedString();
     }
 }

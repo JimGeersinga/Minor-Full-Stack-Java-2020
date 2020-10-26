@@ -7,14 +7,17 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.util.StopWatch;
 
+import java.util.logging.Logger;
+
 @Aspect
-public class LoggerAspect {
+public class PerformanceAspect {
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     @Pointcut("execution(public * *Controller(..))")
-    public void controllerMethods() {}
+    private void controllerMethods() {}
 
     @Pointcut("execution(public * *Repository(..))")
-    public void repositoryMethods() {}
+    private void repositoryMethods() {}
 
     @Around("controllerMethods()")
     public Object logControllerMethodDurations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -23,7 +26,7 @@ public class LoggerAspect {
 
     @Around("repositoryMethods()")
     public Object logRepositoryMethodDurations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        var header = RequestHelper.getCurrentRequest().getHeader("X-Trace-Database-Time");
+        final var header = RequestHelper.getCurrentRequest().getHeader("X-Trace-Database-Time");
         if (header == null) {
             return  proceedingJoinPoint.proceed();
         }
@@ -32,15 +35,15 @@ public class LoggerAspect {
     }
 
     private Object logMethodDuration(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        var stopWatch = new StopWatch();
+        final var stopWatch = new StopWatch();
         stopWatch.start();
 
         final var result = proceedingJoinPoint.proceed();
 
         stopWatch.stop();
 
-        var methodName = proceedingJoinPoint.getSignature().getName();
-        System.out.println("ELAPSED ("+ methodName +"): " + stopWatch.getTotalTimeNanos());
+        final var methodName = proceedingJoinPoint.getSignature().getName();
+        logger.info("Execution of "+ methodName +" took " + (stopWatch.getTotalTimeMillis()) + "ms" );
 
         return result;
     }
