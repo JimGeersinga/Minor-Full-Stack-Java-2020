@@ -13,8 +13,8 @@ public class AccountNumberGenerator {
     }
 
     public static String generateIban(String bankCode, String accountNumber) {
-        var accNumberAddition = String.format("%02d", random.nextInt(99));
-        var iban = new Iban.Builder()
+        String accNumberAddition = String.format("%02d", random.nextInt(99));
+        Iban iban = new Iban.Builder()
                 .countryCode(CountryCode.NL)
                 .bankCode(bankCode)
                 .accountNumber(accountNumber + accNumberAddition)

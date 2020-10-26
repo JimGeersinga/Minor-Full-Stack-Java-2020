@@ -34,10 +34,10 @@ public class AccountService {
     public Account create(AccountDto acc){
         Account account = accountMapper.mapToSource(acc);
 
-        var accountNumber = AccountNumberGenerator.generate();
+        String accountNumber = AccountNumberGenerator.generate();
         account.setAccountNumber(accountNumber);
 
-        var iban = AccountNumberGenerator.generateIban("INGB", accountNumber);
+        String iban = AccountNumberGenerator.generateIban("INGB", accountNumber);
         account.setIban(iban);
 
         return accountRepository.save(account);

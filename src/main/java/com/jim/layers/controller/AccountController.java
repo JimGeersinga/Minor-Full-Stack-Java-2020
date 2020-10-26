@@ -1,5 +1,6 @@
 package com.jim.layers.controller;
 
+import com.jim.layers.PerformanceLogging;
 import com.jim.layers.dao.Account;
 import com.jim.layers.dto.AccountDto;
 import com.jim.layers.exception.AccountNotFoundException;
@@ -18,9 +19,10 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
-@RestController
+@PerformanceLogging
 @RequestMapping("Account")
 @RequiredArgsConstructor
+@RestController
 public class AccountController {
 
     private final AccountService accountService;

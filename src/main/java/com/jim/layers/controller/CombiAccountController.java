@@ -1,5 +1,6 @@
 package com.jim.layers.controller;
 
+import com.jim.layers.PerformanceLogging;
 import com.jim.layers.dao.CombiAccount;
 import com.jim.layers.dto.CombiAccountDto;
 import com.jim.layers.exception.AccountNotFoundException;
@@ -19,9 +20,10 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
-@RestController
+@PerformanceLogging
 @RequestMapping("CombiAccount")
 @RequiredArgsConstructor
+@RestController
 public class CombiAccountController {
 
     private final CombiAccountService combiAccountService;
@@ -44,9 +46,10 @@ public class CombiAccountController {
         CombiAccountDto mappedAccount = combiAccountMapper.mapToDestination(account.get());
         return  new ResponseEntity<>(mappedAccount, HttpStatus.OK);
     }
+
     @Caching(evict = {
-            @CacheEvict(value = "combiAccounts", allEntries = true),
-            @CacheEvict(value = "accounts", allEntries = true)
+        @CacheEvict(value = "combiAccounts", allEntries = true),
+        @CacheEvict(value = "accounts", allEntries = true)
     })
     @PostMapping
     public ResponseEntity<CombiAccountDto> createCombiAccount(@Valid @RequestBody CombiAccountDto account, BindingResult result) {
