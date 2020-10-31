@@ -1,10 +1,14 @@
 package com.jim.security.service;
 
 import com.jim.security.dao.User;
+import com.jim.security.dao.UserPrincipal;
 import com.jim.security.dto.UserDto;
 import com.jim.security.exception.UserNotFoundException;
 import com.jim.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +18,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService  {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     public Collection<User> getAll(){
@@ -68,11 +72,10 @@ public class UserService  {
         userRepository.save(friend);
     }
 
-
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return (UserDetails) userRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
-//    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
+        return new UserPrincipal(user);
+    }
 }

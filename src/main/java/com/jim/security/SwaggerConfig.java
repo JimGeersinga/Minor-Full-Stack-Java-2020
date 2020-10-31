@@ -2,15 +2,13 @@ package com.jim.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Configuration
 public class SwaggerConfig {
@@ -21,10 +19,31 @@ public class SwaggerConfig {
             "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0", new ArrayList<>());
     public static final Set<String> consumes = new HashSet<String>(Arrays.asList("application/json"));
     public static final Set<String> produces = new HashSet<String>(Arrays.asList("application/json"));
+    public static final List<SecurityScheme>  securitySchemes = Arrays.asList(new BasicAuth("basicAuth"));
 
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(DEFAULT_API).consumes(consumes).produces(produces);
+        return new Docket(DocumentationType.SWAGGER_2)
+                .securitySchemes(securitySchemes)
+                .apiInfo(DEFAULT_API)
+                .consumes(consumes)
+                .produces(produces)
+                .securityContexts(Arrays.asList(securityContexts()))
+                .securitySchemes(Arrays.asList(basicAuthScheme()));
+    }
+
+    private SecurityContext securityContexts() {
+        return SecurityContext.builder()
+                .securityReferences(Arrays.asList(basicAuthReference()))
+                .build();
+    }
+
+    private SecurityScheme basicAuthScheme() {
+        return new BasicAuth("basicAuth");
+    }
+
+    private SecurityReference basicAuthReference() {
+        return new SecurityReference("basicAuth", new AuthorizationScope[0]);
     }
 
 }
