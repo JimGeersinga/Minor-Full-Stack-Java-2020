@@ -48,8 +48,24 @@ public class UserService  {
     public void addFriend(long userId, long friendId) throws UserNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         User friend = userRepository.findById(friendId).orElseThrow(UserNotFoundException::new);
+
         user.addFriend(friend);
         userRepository.save(user);
+
+        friend.addFriend(user);
+        userRepository.save(friend);
+    }
+
+    @Transactional(readOnly = false)
+    public void removeFriend(long userId, long friendId) throws UserNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User friend = userRepository.findById(friendId).orElseThrow(UserNotFoundException::new);
+
+        user.removeFriend(friend);
+        userRepository.save(user);
+
+        friend.removeFriend(user);
+        userRepository.save(friend);
     }
 
 

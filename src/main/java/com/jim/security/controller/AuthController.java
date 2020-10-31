@@ -6,10 +6,8 @@ import com.jim.security.dto.UserDto;
 import com.jim.security.mapper.UserMapper;
 import com.jim.security.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +25,6 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    @CachePut(value = "users", key="#createdUser.id")
     public ResponseEntity<UserDto> register(@Valid @RequestBody AuthDto user, BindingResult result) {
         if(result.hasErrors()) return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 

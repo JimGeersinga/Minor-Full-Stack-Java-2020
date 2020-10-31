@@ -3,6 +3,7 @@ package com.jim.security.dao;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import java.util.Collection;
@@ -17,6 +18,9 @@ public class User extends BaseDao {
 
     @ManyToMany
     private Collection<User> friends;
+
+    @Embedded
+    private Address address;
 
     public void addFriend(User user){
         friends.add(user);
