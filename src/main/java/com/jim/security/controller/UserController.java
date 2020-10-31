@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,8 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -44,16 +45,6 @@ public class UserController {
     }
 
     @CachePut(value = "users", key="#user.id")
-    @PostMapping
-    public ResponseEntity<UserDto> createAccount(@Valid @RequestBody UserDto user, BindingResult result) {
-        if(result.hasErrors()) return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        User createdUser = userService.create(user);
-        UserDto mappedUser = userMapper.mapToDestination(createdUser);
-        return  new ResponseEntity<>(mappedUser, HttpStatus.CREATED);
-    }
-
-    @CachePut(value = "users", key="#user.id")
     @PutMapping("/{id}")
     public ResponseEntity updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDto user, BindingResult result) {
         if(result.hasErrors()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -72,6 +63,22 @@ public class UserController {
         try {
             userService.delete(id);
             return  new ResponseEntity(HttpStatus.NO_CONTENT);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Caching(put = {
+        @CachePut(value = "users", key = "#userId"),
+        @CachePut(value = "users", key = "#friendId")
+    })
+    @PostMapping("/{id}/addfriend")
+    public ResponseEntity addFriend(@PathVariable("id") Long userId, @Valid @RequestBody Long friendId, BindingResult result) {
+        if(result.hasErrors()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
+        try {
+            userService.addFriend(userId, friendId);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (UserNotFoundException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
