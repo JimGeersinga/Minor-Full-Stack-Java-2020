@@ -3,14 +3,23 @@ package com.jim.security.mapper;
 import com.jim.security.dao.User;
 import com.jim.security.dto.UserDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
-    UserDto mapToDestination(User source);
-    Collection<UserDto> mapToDestination(Collection<User> source);
+public abstract class UserMapper {
 
-    User mapToSource(UserDto destination);
-    Collection<User> mapToSource(Collection<UserDto> destination);
+    @Mapping(target = "roles", expression = "java(mapRoles(source))")
+    public abstract UserDto mapToDestination(User source);
+
+    @Mapping(target = "roles", ignore = true)
+    public abstract User mapToSource(UserDto destination);
+
+    @Named("myTransformation")// or your custom @Qualifier annotation
+    protected Collection<String> mapRoles (User source) {
+        return source.getRoles().stream().map(x -> x.getName()).collect(Collectors.toList());
+    }
 }

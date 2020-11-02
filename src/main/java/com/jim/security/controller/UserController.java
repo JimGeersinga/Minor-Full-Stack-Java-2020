@@ -4,6 +4,7 @@ import com.jim.security.dao.User;
 import com.jim.security.dto.UserDto;
 import com.jim.security.exception.UserNotFoundException;
 import com.jim.security.mapper.UserMapper;
+import com.jim.security.security.SecurityUtil;
 import com.jim.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("user")
@@ -23,9 +25,9 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping()
-    public ResponseEntity<Collection<UserDto>> getAccounts(){
+    public ResponseEntity<Collection<UserDto>> getUsers(){
         Collection<User> users = userService.getAll();
-        Collection<UserDto> mappedUsers = userMapper.mapToDestination(users);
+        Collection<UserDto> mappedUsers = users.parallelStream().map(userMapper::mapToDestination).collect(Collectors.toList());
         return new ResponseEntity<>(mappedUsers, HttpStatus.OK);
     }
 
@@ -38,12 +40,22 @@ public class UserController {
         return  new ResponseEntity<>(mappedUser, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/friends")
+    public ResponseEntity<Collection<UserDto>> getFriends(@PathVariable Long id) {
+        Optional<User> user = userService.getById(id);
+        if(!user.isPresent()) return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Collection<UserDto> mappedUsers = user.get().getFriends().parallelStream().map(userMapper::mapToDestination).collect(Collectors.toList());
+        return  new ResponseEntity<>(mappedUsers, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDto user, BindingResult result) {
+    public ResponseEntity updateUser(@PathVariable("id") Long userId, @Valid @RequestBody UserDto user, BindingResult result) {
+        if(!SecurityUtil.isAuthenticatedUser(userId) || !SecurityUtil.hasRole("Admin")) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         if(result.hasErrors()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
         try {
-            userService.update(id, user);
+            userService.update(userId, user);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (UserNotFoundException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);

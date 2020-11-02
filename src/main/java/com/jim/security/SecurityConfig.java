@@ -1,7 +1,6 @@
 package com.jim.security;
 
 
-import com.jim.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserDetailsService userDetailsService;
 
     @Override
     public void configure(WebSecurity web)  {
@@ -28,18 +30,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/user/**").authenticated()
+                .antMatchers("/auth/**").permitAll() // allow everyone
+                .antMatchers("/user/**").authenticated() // allow only authenticated people
+                .antMatchers("/admin/**").hasRole("ADMIN") // allow only authenticated people with the role ADMIN
                 .and().httpBasic() // enable basic authentication
                 .and().csrf().disable(); // This is required
     }
 
     @Bean
-    protected AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder, UserService userService) {
+    protected AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setPasswordEncoder(passwordEncoder);
-        authProvider.setUserDetailsService(userService);
+        authProvider.setUserDetailsService(userDetailsService);
 
         return authProvider;
     }
@@ -48,4 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 }

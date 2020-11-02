@@ -1,9 +1,11 @@
 package com.jim.security.service;
 
+import com.jim.security.dao.Role;
 import com.jim.security.dao.User;
 import com.jim.security.dao.UserPrincipal;
 import com.jim.security.dto.UserDto;
 import com.jim.security.exception.UserNotFoundException;
+import com.jim.security.repository.RoleRepository;
 import com.jim.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public Collection<User> getAll(){
         return userRepository.findAll();
@@ -70,6 +73,24 @@ public class UserService implements UserDetailsService {
 
         friend.removeFriend(user);
         userRepository.save(friend);
+    }
+
+    @Transactional(readOnly = false)
+    public void addRole(long userId, long roleId) throws UserNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Role role = roleRepository.findById(roleId).orElseThrow(UserNotFoundException::new);
+
+        user.addRole(role);
+        userRepository.save(user);
+    }
+
+    @Transactional(readOnly = false)
+    public void removeRole(long userId, long roleId) throws UserNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Role role = roleRepository.findById(roleId).orElseThrow(UserNotFoundException::new);
+
+        user.removeRole(role);
+        userRepository.save(user);
     }
 
     @Override
