@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Minor | Form</title>
+    <style>
+        body {
+            margin:0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        header {
+            background: #222; 
+            color: white;
+            display:flex; 
+            flex-direction: row;
+        }
+        header .title {
+            margin: 1rem; 
+            font-size: 1.5em;
+        }
+        header nav ul {
+            list-style-type: none;
+        }
+        header nav ul li {
+            display: inline-block; 
+            margin: 0 0.5rem; 
+            padding: 0.5rem; 
+            border-bottom: 2px solid orange
+        }
+        header nav ul li.active {
+            border-bottom: 2px solid orange
+        }
+
+        main {
+            padding: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        form .form-group {
+            display: flex;
+            flex-direction: row;
+            margin: 0.25rem 0;
+        }
+
+        form .form-group label{
+            flex-grow: 1;
+            max-width: 200px;
+        }
+        form .form-group input{
+            flex-grow: 4;
+            padding: 0.25rem;
+        }
+        form input[type="submit"] {
+            width: auto;
+            display: block;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title">Java Minor</div>
+        <nav>
+            <ul>
+                <li>Home</li>
+                <li class="active">Form</li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <form>
+                <div class="form-group">
+                    <label>Voorletters</label>
+                    <input type="text" required />
+                </div>
+                <div class="form-group">
+                    <label>Achternaam</label>
+                    <input type="text" required />
+                </div>
+                <div class="form-group">
+                    <label>Straat</label>
+                    <input type="text" required />
+                </div>
+                <div class="form-group">
+                    <label>Huisnummer</label>
+                    <input type="number" required />
+                </div>
+                <div class="form-group">
+                    <label>Plaats</label>
+                    <input type="text" required />
+                </div>
+                <div class="form-group">
+                    <label>Postcode</label>
+                    <input type="text" required pattern="[0-9]{4}[a-zA-Z]{2}" />
+                </div>
+                <div class="form-group">
+                    <label>BSN</label>
+                    <input type="text" required />
+                </div>
+                <div class="form-group">
+                    <label>Geboorte datum</label>
+                    <input type="date" required/>
+                </div>
+                <div class="form-group">
+                    <label>Tel.nr</label>
+                    <input type="tel" required minlength="10" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" required />
+                </div>
+                <input type="submit" value="Opslaan" />
+            </form>
+        </section>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>
