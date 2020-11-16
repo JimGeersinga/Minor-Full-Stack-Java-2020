@@ -1,0 +1,14 @@
+<mat-toolbar color="primary">
+  <h1>Minor</h1>
+  <div class="menu">
+    <a mat-button [routerLink]="'/home'" routerLinkActive="mat-accent"> Home </a>
+    <a mat-button [routerLink]="'/contact'" routerLinkActive="mat-accent"> Contact </a>
+  </div>
+  <span class="menu-spacer"></span>
+  <div class="menu">
+    <ng-container [ngSwitch]="isLoggedIn$ | async">
+      <a mat-button *ngSwitchDefault [routerLink]="'/login'" routerLinkActive="mat-accent"> Login </a>
+      <a mat-button *ngSwitchCase="true" (click)="logout()"> Logout ({{(loggedInUser$ | async)?.username }}) </a>
+    </ng-container>
+  </div>
+</mat-toolbar>
