@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
       this.loginForm.reset();
       this.userService.login(loginData.email, loginData.password).subscribe(success => {
         if (success) {
-          this.router.navigateByUrl('/contact');
+          this.router.navigate(['contact']);
         } else {
           this.errorMessage = 'Login failed';
         }

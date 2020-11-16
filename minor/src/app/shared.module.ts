@@ -29,7 +29,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -105,6 +105,9 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule
+  ],
+  providers: [
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
   ]
 })
 export class SharedModule { }

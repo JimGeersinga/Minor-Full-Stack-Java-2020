@@ -22,4 +22,9 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should work', () => {
+    component.onSubmit({ email: 'jim', password: 'asdasd'});
+    expect(component.errorMessage).toEqual('Login failed');
+  });
 });

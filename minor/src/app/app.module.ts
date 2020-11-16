@@ -9,6 +9,8 @@ import { LoginComponent } from './components/login/login.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToolbarComponent } from './components/layout/toolbar/toolbar.component';
+import { StoreModule } from '@ngrx/store';
+import { authReducer } from './ngrx/auth/auth.reducer';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,10 @@ import { ToolbarComponent } from './components/layout/toolbar/toolbar.component'
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forRoot({
+      isLoggedIn: authReducer
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -20,10 +20,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'minor'`, () => {
+  it(`should have as title 'Java Minor'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('minor');
+    expect(app.title).toEqual('Java Minor');
   });
 
   it('should render title', () => {
